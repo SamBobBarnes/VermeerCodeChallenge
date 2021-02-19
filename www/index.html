@@ -11,7 +11,9 @@
     <h1>Vermeer Code Challenge: Github Search</h1>
 
     <div id="app">
-
+            <input />
+            <button v-on:click="search">Search</button>
+            <p v-for="item in result">{{ item.login }}</p>
     </div>
 
     <script src="app.js"></script>
