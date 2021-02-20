@@ -1,0 +1,99 @@
+.avatar {
+  height: 50px;
+  width: 50px;
+}
+.userrow {
+  display: flex;
+  margin: 10px;
+}
+
+.title {
+  text-align: left;
+  vertical-align: top;
+  margin-left: 20px;
+  font-weight: bold;
+}
+
+a {
+  color: #000000;
+}
+
+.itemrow {
+  border-width: 1px;
+  border-color: #000000;
+  border-style: solid;
+  padding: 5px;
+  margin: 2px;
+  background-color: #fefefe;
+}
+
+#app {
+  padding: 2%;
+}
+
+#form {
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+#searchbox {
+  width: 50%;
+}
+
+.followercount {
+  margin-left: 20px;
+}
+
+.name {
+  margin-left: 20px;
+  color: #5555ff;
+  font-weight: bold;
+}
+
+.bio {
+  margin-left: 80px;
+  color: #999;
+}
+
+body {
+  background-color: #eee;
+}
+
+button {
+  background: #fefefe;
+}
+
+.statsbox {
+  margin-left: 20px;
+  background-color: #ddd;
+  border-radius: 10px;
+  position: absolute;
+  right: 5%;
+}
+
+.stats {
+  margin-top: 2px;
+  margin-bottom: 2px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.stars {
+  color: #ffff00;
+}
+
+.watch {
+  color: rgb(9, 190, 130);
+}
+
+.forks {
+  color: rgb(240, 83, 83);
+}
+
+#pagination {
+  text-align: center;
+}
