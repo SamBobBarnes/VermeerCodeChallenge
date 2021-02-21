@@ -22,8 +22,10 @@
             </table>
             <button @click="submit">Search</button>
         </div>
-        <p v-if="this.total > 0" id="total">{{ total }} results</p>
+        <p v-if="this.total > 0" id="total">{{ total }} result<span v-if="this.total > 1">s</span>. <span v-if="this.total > 1000" id="overflow">Only the first 1000 results are accessible.</span></p>
         <p v-if="notexterr" class="err">Please Enter Some Text</p>
+        <button id="back" @click="backBtnHandler" v-if="this.p > 1 && this.displayFooter">Back</button>
+        <button id="next" @click="nextBtnHandler" v-if="this.p < this.numPages  && this.displayFooter">Next</button>
 
         <div id="resultsDiv">
 
@@ -62,9 +64,11 @@
             </div>
         </div>
 
-        <div id="footer" v-if="displayFooter">
+        <div id="footer" v-if="this.displayFooter">
             <!-- Pagination -->
-            <p id="pagination"><a>{{paginationFoot[0]}}</a> <a>{{paginationFoot[1]}}</a> <a>{{paginationFoot[2]}}</a> <a>{{paginationFoot[3]}}</a> <a>{{paginationFoot[4]}}</a> <a>{{paginationFoot[5]}}</a> <a>{{paginationFoot[6]}}</a></p>
+            <p id="itemcount">Items {{ pageNums }}
+            <button id="back" @click="backBtnHandler" v-if="this.p > 1">Back</button>
+            <button id="next" @click="nextBtnHandler" v-if="this.p < this.numPages">Next</button>
         </div>
     </div>
 

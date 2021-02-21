@@ -10,11 +10,12 @@ const app = Vue.createApp({
             q: "sam",
             m: "usrs",
             currentm: "usrs",
-            per_page: 2,
+            per_page:30,
             radioList: ["repo","iss","usrs"],
             numPages: 0,
             paginationFoot: ["1","2","3","4","5","...","30"],
-            displayFooter: false
+            displayFooter: false,
+            pageNums: ""
         }
     },
     methods: {
@@ -26,6 +27,8 @@ const app = Vue.createApp({
                 this.buildUrl()
                 this.getResult(this.searchQueryURL)
                 this.notexterr = false
+                this.pageNums = this.returnPageNums()
+
             }
             else {this.notexterr = true}    // Visible if no text was entered
         },
@@ -56,7 +59,18 @@ const app = Vue.createApp({
             const data = {
                 q: this.q,  // input
                 m: this.m,  // repo, iss, usrs
-                p: this.p    // page number
+                p: 1    // page number
+            }
+            this.sendForm(data)
+        },
+        submitPage: function (nb){  // submit form
+            var newPage
+            if(nb) newPage = this.p + 1
+            else newPage = this.p - 1
+            const data = {
+                q: this.q,  // input
+                m: this.m,  // repo, iss, usrs
+                p: newPage    // page number
             }
             this.sendForm(data)
         },
@@ -88,7 +102,12 @@ const app = Vue.createApp({
 
         },
         returnPageNum: function (total) {
-            return Math.ceil(1000 / this.per_page)
+            if(total > 1000){
+                return Math.ceil(1000 / this.per_page)
+            } else {
+                return Math.ceil(total / this.per_page)
+            }
+
         },
         getUserInfo: async function (user, i) {      // Get follower data from API
 
@@ -126,55 +145,75 @@ const app = Vue.createApp({
             this.resultList[i].full_name = full_name
             this.resultList[i].repo_html_url = html_url
         },
+        returnPageNums: function() {
+            var num1 = ""
+            var num2 = ""
+
+            num1 = (this.p-1) * this.per_page + 1
+            num2 = this.p * this.per_page
+
+            var result = num1 + " - " + num2
+            return result
+
+        },
         buildPagination: function () {
+            if(this.numPages > 7){
+                // digit 1
+                this.paginationFoot[0] = 1
 
-            // digit 1
-            this.paginationFoot[0] = 1
+                // digit 2
+                if(this.p <= 4) {
+                    this.paginationFoot[1] = 2
+                } else {
+                    this.paginationFoot[1] = "..."
+                }
 
-            // digit 2
-            if(this.p <= 4) {
-                this.paginationFoot[1] = 2
-            } else {
-                this.paginationFoot[1] = "..."
+                // digit 3
+                if(this.p < 3) {
+                    this.paginationFoot[2] = 3
+                } else if(this.p >= this.numPages - 2) {
+                    this.paginationFoot[2] = this.numPages - 4
+                } else {
+                    this.paginationFoot[2] = this.p - 1
+                }
+
+                // digit 4
+                if(this.p >= 4 && this.p <= this.numPages - 3) {
+                    this.paginationFoot[3] = this.p
+                } else if(this.p < 3) {
+                    this.paginationFoot[3] = 4
+                } else if(this.p > this.numPages - 3) {
+                    this.paginationFoot[3] = this.numPages - 3
+                }
+
+                // digit 5
+                if(this.p > this.numPages - 2) {
+                    this.paginationFoot[4] = this.numPages - 2
+                } else if(this.p < 3) {
+                    this.paginationFoot[4] = 5
+                } else {
+                    this.paginationFoot[4] = this.p + 1
+                }
+
+                // digit 6
+                if(this.p > this.numPages - 4) {
+                    this.paginationFoot[5] = this.numPages - 1
+                } else {
+                    this.paginationFoot[5] = "..."
+                }
+
+                // digit 7
+                this.paginationFoot[6] = this.numPages
             }
 
-            // digit 3
-            if(this.p < 3) {
-                this.paginationFoot[2] = 3
-            } else if(this.p >= this.numPages - 2) {
-                this.paginationFoot[2] = this.numPages - 4
-            } else {
-                this.paginationFoot[2] = this.p - 1
-            }
 
-            // digit 4
-            if(this.p >= 4 && this.p <= this.numPages - 3) {
-                this.paginationFoot[3] = this.p
-            } else if(this.p < 3) {
-                this.paginationFoot[3] = 4
-            } else if(this.p > this.numPages - 3) {
-                this.paginationFoot[3] = this.numPages - 3
-            }
-
-            // digit 5
-            if(this.p > this.numPages - 2) {
-                this.paginationFoot[4] = this.numPages - 2
-            } else if(this.p < 3) {
-                this.paginationFoot[4] = 5
-            } else {
-                this.paginationFoot[4] = this.p + 1
-            }
-
-            // digit 6
-            if(this.p > this.numPages - 4) {
-                this.paginationFoot[5] = this.numPages - 1
-            } else {
-                this.paginationFoot[5] = "..."
-            }
-
-            // digit 7
-            this.paginationFoot[6] = this.numPages
-        }
+        },
+        backBtnHandler: function() {
+            this.submitPage(false)
+        },
+        nextBtnHandler: function() {
+            this.submitPage(true)
+        },
     },
 
     mounted() {

@@ -97,3 +97,24 @@ button {
 #pagination {
   text-align: center;
 }
+
+#overflow {
+  color: rgb(224, 90, 90);
+}
+
+#footer {
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+#next {
+  margin: 5px;
+}
+
+#back {
+  margin: 5px;
+}
