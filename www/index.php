@@ -4,7 +4,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vermeer Code Challenge: Github Search</title>
-    <script src="https://unpkg.com/vue@3.0.5"></script>
+    <script src="https://unpkg.com/vue@3.0.5/dist/vue.global.prod.js"></script>
     <link href="index.css" rel="stylesheet">
 </head>
 <body>
@@ -75,7 +75,7 @@
 
 
 
-    <?php
+    <?php   //Get data from href
         error_reporting( error_reporting() & ~E_NOTICE ); // remove notice that vars are undefined
         $q = $_GET['q'];
         $m = $_GET['m'];

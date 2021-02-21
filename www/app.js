@@ -13,7 +13,6 @@ const app = Vue.createApp({
             per_page:30,
             radioList: ["repo","iss","usrs"],
             numPages: 0,
-            paginationFoot: ["1","2","3","4","5","...","30"],
             displayFooter: false,
             pageNums: ""
         }
@@ -27,7 +26,7 @@ const app = Vue.createApp({
                 this.buildUrl()
                 this.getResult(this.searchQueryURL)
                 this.notexterr = false
-                this.pageNums = this.returnPageNums()
+                this.pageNums = this.returnPageNums() // sets page nums for footer
 
             }
             else {this.notexterr = true}    // Visible if no text was entered
@@ -35,9 +34,9 @@ const app = Vue.createApp({
         getResult: async function (url) {      // Get data from API
             const headers = {
                 "Authorization" : `Token b4c09a3d0c286f541da69addfa4fcfa5f0a74365`
-            }
+            } //personal authentication token
 
-            const response = await fetch(url, {
+            const response = await fetch(url, {     // This is taken from a tutorial on oauth
                 "method": "GET",
                 "headers": headers
             })
@@ -45,14 +44,13 @@ const app = Vue.createApp({
             //console.log(result)
             this.total = result.total_count // returns total num of results
             this.numPages = this.returnPageNum(result.total_count) // counts the number of pages needed
-            this.buildPagination()
             result.items.forEach(i=>{   // add each item to result
                 this.resultList.push(i)
-                if(this.m == "usrs") this.getUserInfo(i.login,this.resultList.length-1)
-                if(this.m == "iss") this.getIssueInfo(i.repository_url,this.resultList.length-1)
+                if(this.m == "usrs") this.getUserInfo(i.login,this.resultList.length-1) // add items from different page to results json
+                if(this.m == "iss") this.getIssueInfo(i.repository_url,this.resultList.length-1) // add items from different page to results json
             })
         },
-        searchInputHandler: function (){
+        searchInputHandler: function (){    // writes searchbox value to var in realtime
             this.q = document.getElementById("searchbox").value
         },
         submit: function (){  // submit form
@@ -78,10 +76,10 @@ const app = Vue.createApp({
             const href = "?q=" + data.q.replace(/\s/g, "%20") + "&m=" + data.m + "&p=" + data.p
             window.location.href = href
         },
-        onRadioChange: function (e) {
+        onRadioChange: function (e) {   // change m when radio buttons change
             this.m = e.srcElement.value
         },
-        buildUrl: function () {
+        buildUrl: function () { // builds the href for the API request
             var query = ""
             switch(this.m){ // Add search function
                 case "repo":
@@ -101,7 +99,7 @@ const app = Vue.createApp({
             this.searchQueryURL += query
 
         },
-        returnPageNum: function (total) {
+        returnPageNum: function (total) {   // counts total number of pages
             if(total > 1000){
                 return Math.ceil(1000 / this.per_page)
             } else {
@@ -128,7 +126,7 @@ const app = Vue.createApp({
             this.resultList[i].bio = bio
             this.resultList[i].followers = followers
         },
-        getIssueInfo: async function (url, i) {      // Get follower data from API
+        getIssueInfo: async function (url, i) {      // Get issue data from API
 
             const headers = {
                 "Authorization" : `Token b4c09a3d0c286f541da69addfa4fcfa5f0a74365`
@@ -145,7 +143,7 @@ const app = Vue.createApp({
             this.resultList[i].full_name = full_name
             this.resultList[i].repo_html_url = html_url
         },
-        returnPageNums: function() {
+        returnPageNums: function() {    // sets item range for footer
             var num1 = ""
             var num2 = ""
 
@@ -156,62 +154,10 @@ const app = Vue.createApp({
             return result
 
         },
-        buildPagination: function () {
-            if(this.numPages > 7){
-                // digit 1
-                this.paginationFoot[0] = 1
-
-                // digit 2
-                if(this.p <= 4) {
-                    this.paginationFoot[1] = 2
-                } else {
-                    this.paginationFoot[1] = "..."
-                }
-
-                // digit 3
-                if(this.p < 3) {
-                    this.paginationFoot[2] = 3
-                } else if(this.p >= this.numPages - 2) {
-                    this.paginationFoot[2] = this.numPages - 4
-                } else {
-                    this.paginationFoot[2] = this.p - 1
-                }
-
-                // digit 4
-                if(this.p >= 4 && this.p <= this.numPages - 3) {
-                    this.paginationFoot[3] = this.p
-                } else if(this.p < 3) {
-                    this.paginationFoot[3] = 4
-                } else if(this.p > this.numPages - 3) {
-                    this.paginationFoot[3] = this.numPages - 3
-                }
-
-                // digit 5
-                if(this.p > this.numPages - 2) {
-                    this.paginationFoot[4] = this.numPages - 2
-                } else if(this.p < 3) {
-                    this.paginationFoot[4] = 5
-                } else {
-                    this.paginationFoot[4] = this.p + 1
-                }
-
-                // digit 6
-                if(this.p > this.numPages - 4) {
-                    this.paginationFoot[5] = this.numPages - 1
-                } else {
-                    this.paginationFoot[5] = "..."
-                }
-
-                // digit 7
-                this.paginationFoot[6] = this.numPages
-            }
-
-
-        },
-        backBtnHandler: function() {
+        backBtnHandler: function() {    // handles back button
             this.submitPage(false)
         },
-        nextBtnHandler: function() {
+        nextBtnHandler: function() {    // handles next button
             this.submitPage(true)
         },
     },
@@ -225,8 +171,8 @@ const app = Vue.createApp({
             this.p = window.__INITIAL_STATE__.p
             //console.log(this.q + " " + this.p + " " + this.m)
             this.search()
-            document.getElementById("searchbox").value = this.q
-            for(var i = 0; i < this.radioList.length; i++) {
+            document.getElementById("searchbox").value = this.q // sets current q value to searchbox value
+            for(var i = 0; i < this.radioList.length; i++) {    // checks the radio button for the current mode
                 if (this.m == this.radioList[i]){
                     document.getElementById(this.radioList[i]).checked = true;
                 }
@@ -234,7 +180,7 @@ const app = Vue.createApp({
                     document.getElementById(this.radioList[i]).checked = false;
                 }
             }
-            this.displayFooter = true
+            this.displayFooter = true   // displays footer buttons
 
         }
     }
